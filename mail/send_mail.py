@@ -109,17 +109,15 @@ class send_mail:
 
             approver = ""
             orderid_level = l[1] + '\t' + l[2]
-            print orderid_level
             if orderid_level in self.flow_level:
                 approver = self.flow_level[orderid_level].approver
-                print approver
             orderRstInfo = flow_order_result(l[1], l[2], l[3], l[4], l[5], l[6], l[7], l[8])
             self.mail_html = self.add_reshtml_head(orderInfo.summary)
             self.mail_html += self.ps_line
             self.mail_html += self.table_head
             self.mail_html += self.add_reshtml_table(flowName, orderInfo, orderRstInfo)
             self.mail_html += self.add_reshtml_tail()
-            sm.send(self.mail_html, approver)
+            sm.send(self.mail_html, approver, orderInfo.claimer)
 
         fd.close()
         return 0
@@ -208,7 +206,7 @@ span.ct {font-weight:bold; color: #0000CC}
 
         return tmp_html
 
-    def send(self, html, approver):
+    def send(self, html, approver, claimer):
         try:
             mailServer=self.config.get('email', 'server')
             mailUserName=self.config.get('email', 'user')
@@ -217,8 +215,8 @@ span.ct {font-weight:bold; color: #0000CC}
             #toAdd=self.config.get('email', 'toAdd')
             emailTools = EmailTool(mailServer, mailUserName, mailPassword, mailFrom)
             subject='[Niagara]--审批单'
-            print 'send mail to', approver
-            emailTools.sendEmail(approver, subject, html)
+            print 'send mail to', approver, claimer
+            emailTools.sendEmail(approver + ',' + claimer, subject, html)
 
         except Exception,why:
             print "send error",why

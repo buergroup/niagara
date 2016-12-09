@@ -26,14 +26,17 @@ do
     $MYSQL_BIN -e "select * from flow_order_result where id>$PRE_ID" >$DATA_DIR/$FLOW_ORDER_RESULT_FILE
     sed -i '1d' $DATA_DIR/$FLOW_ORDER_RESULT_FILE
     echo "begin, pre_id = $PRE_ID"
-    PRE_ID=`awk -F '\t' 'BEGIN{id=0}{if($1>id){id=$1}}END{print id}' $DATA_DIR/$FLOW_ORDER_RESULT_FILE`
+    PRE_ID=`awk -F '\t' 'BEGIN{id='$PRE_ID'}{if($1>id){id=$1}}END{print id}' $DATA_DIR/$FLOW_ORDER_RESULT_FILE`
     echo "end, pre_id = $PRE_ID"
-    $PYTHON_BIN $SEND_MAIL_BIN
-    if [ $? -eq 0 ]
+    if [ -s $DATA_DIR/$FLOW_ORDER_RESULT_FILE ]
     then
-        echo `date` "send mail done"
-    else
-        echo `date` "send mail failed"
+        $PYTHON_BIN $SEND_MAIL_BIN
+        if [ $? -eq 0 ]
+        then
+            echo `date` "send mail done"
+        else
+            echo `date` "send mail failed"
+        fi
     fi
     sleep 5
 done
