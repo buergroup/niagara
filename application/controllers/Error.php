@@ -18,6 +18,8 @@ class ErrorController extends Yaf_Controller_Abstract {
         switch(true):
             case ($exception instanceof Yaf_Exception_LoadFailed):
                 return $this->_pageNotFound();
+            case ($exception instanceof AuthException):
+                return $this->_pagePermissionDenied();
             default:
                 return $this->_unknownError();
         endswitch;
@@ -27,6 +29,12 @@ class ErrorController extends Yaf_Controller_Abstract {
         $this->getResponse()->setHeader('HTTP/1.0 404 Not Found');
         $this->_view->error = '你所访问的页面去哪了呀？';
         $this->_view->code = '404';
+    }
+
+    private function _pagePermissionDenied(){
+        $this->getResponse()->setHeader('HTTP/1.0 403 Permission Denied');
+        $this->_view->error = '你没有权限访问哦~';
+        $this->_view->code = '403';
     }
 
     private function _unknownError(){
