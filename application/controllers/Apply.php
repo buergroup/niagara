@@ -51,4 +51,14 @@ class ApplyController extends Yaf_Controller_Abstract {
             $this->_view->orderlist = $orderlist;
         }
     }
+    public function showAction(){
+        $order_id = $this->_query->getQuery('id') ?: 0;
+        $order = new OrderManageModel();
+        $orderinfo = $order->getOrderById($order_id);
+        //var_dump($orderinfo);die();
+
+        if($orderinfo){
+            $this->_view->orderinfo = $orderinfo;
+        }
+    }
 }

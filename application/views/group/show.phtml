@@ -2,7 +2,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Default Example</h3>
+                        <h3 class="panel-title"><?echo $this->group['group_info']['name']?></h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -18,13 +18,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                  <?php
+                                    if(is_array($this->group['group_members'])) foreach ($this->group['group_members'] as $group):
+                                    ?>
                                         <tr>
-                                            <td>732</td>
-                                            <td>huanglele@domob.cn</td>
-                                            <td>乐乐</td>
-                                            <td>Admin</td>
-                                            <td></td>
-                                        </tr>
+                                            <td><?php echo $group['id'];?></td>
+                                            <td><?php echo $group['user'];?></td>
+                                            <td><?php echo $group['user'];?></td>
+                                            <td><?echo $this->group['group_info']['name']?></td>
+                                            <td>   <a href="/group/show?id=<?php echo $group['group_info']['id'];?>"><button class="btn btn-icon btn-primary m-b-5"> <i class="fa fa-star"></i> </button></a> 
+                                    </td>
+                                </tr>
+                                <?php
+                                endforeach;
+                                ?>
                                     </tbody>
                                 </table>
 

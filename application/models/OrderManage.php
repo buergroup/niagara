@@ -120,9 +120,54 @@ class OrderManageModel {
 			->order('update_time desc');
 		 
 		$rows = $this->_orderResult->fetchAll($select);
-		return $rows ? $rows->toArray() : array();
+		$list = $rows ? $rows->toArray() : array();
+		//过滤出同一层级的有效结果
+		foreach ($rows as $row) {
+			$ret[$row['level']] = $row->toArray();
+			if($row->status != 22){
+				$tmp[$row['level']]['audit_user'] = $row->audit_user;
+				$tmp[$row['level']]['audit_info'] = $row->audit_info;
+			}
+		}
+		foreach ($tmp as $level => $data) {
+			$ret[$level]['audit_user'] = $data['audit_user'];
+			$ret[$level]['audit_info'] = $data['audit_info'];
+		}
+		return $ret;
 	}
+	public function getOrderById($orid){
+		$orderinfo = $this->_flowOrder->find($orid)->toArray()[0];
+		return array(
+			'flowinfo'=>$this->_flowInfo->find($orderinfo['flow_id'])->toArray()[0],
+			'orderinfo'=>$orderinfo,
+			'orderauditinfo' => $this->getOrderResult($orid),
+		);
+	}
+	public function getAuditOrderByUser($p) {
+		$select = $this->_orderResult->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+		$select->setIntegrityCheck(false)
+			->where('audit_user = ?', $p['audit_user'])
+			->where('status = ?', $p['status'])
+			->order('update_time desc');
+		 
+		$rows = $this->_orderResult->fetchAll($select);
+		$rows = $rows ? $rows->toArray() : array();
+		if (!$rows) {
+			return array();
+		}
 
+		$ret = array();
+		foreach ($rows as $row) {
+			$audit = array();
+			$audit['flow_order_result'] = $row;
+			$audit['flow_order'] = $this->_flowOrder->find($row['orderid'])->toArray()[0];
+			$flow_id = $audit['flow_order']['flow_id'];
+			$audit['flow_info'] = $this->_flowInfo->find($flow_id)->toArray()[0];
+			$ret[] = $audit;
+		}
+
+		return $ret;
+	}
 	public function getOrderByUser($p) {
 		$select = $this->_flowOrder->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)

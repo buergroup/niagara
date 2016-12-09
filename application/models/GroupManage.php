@@ -16,7 +16,7 @@ class GroupManageModel {
 	public function listGroups() {
 		$rows = $this->_groupModel->fetchAll();
 		if (!$rows) {
-			return null;
+			return array();
 		}
 		$rows = $rows->toArray();
 		$ret = array();

@@ -27,20 +27,14 @@ class LayoutPlugin extends Yaf_Plugin_Abstract {
         if($action == 'login' ||  $action == 'logout'){
             return;
         }
-        /* get the body of the response */
+        Yaf_Registry::set('request', $request);
         $body = $response->getBody();
-
-        /*clear existing response*/
         $response->clearBody();
-
-        /* wrap it in the layout */
         $layout = new Yaf_View_Simple($this->_layoutDir);
         $layout->content = $body;
         $user = new UserInfoModel();
         $layout->user = $user->showUserInfo();
         $layout->assign('layout', $this->_layoutVars);
-
-
         /* set the response to use the wrapped version of the content */
         $response->setBody($layout->render($this->_layoutFile));
     }

@@ -58,23 +58,22 @@
             <nav class="navigation">
                 <ul class="list-unstyled">
                     <li class=""><a href="/index/index"><i class="zmdi zmdi-view-dashboard"></i> <span class="nav-label">欢迎页</span></a></li>
-                    <li class="has-submenu">
+                    <li class="has-submenu <?php G::RenderActive('flow','list')?>" >
                         <a href="/flow/list"><i class="zmdi zmdi-format-underlined"></i> <span class="nav-label">申请权限</span><span class="menu-arrow"></span></a>
       
                     </li>
-                    <li class="has-submenu"><a href="/apply/list"><i class="zmdi zmdi-album"></i> <span class="nav-label">我的申请</span><span class="badge bg-warning">New</span></a>
+                    <li class="has-submenu <?php G::RenderActive('apply')?>" ><a href="/apply/list"><i class="zmdi zmdi-album"></i> <span class="nav-label">我的申请</span><span class="badge bg-warning">New</span></a>
                     </li>
-                    <li class="has-submenu"><a href="/approval/list"><i class="zmdi zmdi-collection-text"></i> <span class="nav-label">我的审批</span><span class="menu-arrow"></span></a>
+                    <li class="has-submenu <?php G::RenderActive('approval')?>" ><a href="/approval/list"><i class="zmdi zmdi-collection-text"></i> <span class="nav-label">我的审批</span><span class="menu-arrow"></span></a>
                     </li>
-                    <li class="has-submenu"><a href="#"><i class="zmdi ion-android-social-user"></i> <span class="nav-label">用户组管理</span><span class="menu-arrow"></span></a>
+                    <li class="has-submenu <?php G::RenderActive('group')?>" ><a href="#"><i class="zmdi ion-android-social-user"></i> <span class="nav-label">用户组管理</span><span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
                             <li><a href="/group/list">用户组列表</a></li>
-                            <li><a href="/group/show">管理员组列表</a></li>
                             <li><a href="/group/create">添加用户组</a></li>
                         </ul>
                     </li>
                     </li>
-                    <li class="has-submenu active"><a href="#"><i class="zmdi zmdi-collection-item"></i> <span class="nav-label">申请流程管理</span><span class="menu-arrow"></span></a>
+                    <li class="has-submenu <?php G::RenderActive('flow')?>"><a href="#"><i class="zmdi zmdi-collection-item"></i> <span class="nav-label">申请流程管理</span><span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
                             <li><a href="/flow/list">申请流程管理</a></li>
                             <li><a href="/flow/create">创建申请流程</a></li>

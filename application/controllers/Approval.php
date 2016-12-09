@@ -11,6 +11,9 @@ class ApprovalController extends Yaf_Controller_Abstract {
     }
     
     public function listAction() {
-	    $this->_layout->meta_title = '审批管理';
+    	//获取待审核列表
+	   $order = new OrderManageModel();
+	   //$this->_view->auditlist = $order->getAuditBy($this->userinfo['username'], $status);
+
     }
 }

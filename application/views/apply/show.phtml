@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="timeline m-b-30">
+
+            <li>
+                <div class="timeline-badge"><i class="fa fa-check"></i>
+                </div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4 class="timeline-title"><?php echo G::GetRealName($this->orderinfo['orderinfo']['claimer'])?><?php echo $this->orderinfo['flowinfo']['name']?></h4>
+                        <p>
+                            <small class="text-muted"><i class="fa fa-time"><?php echo date("Y-m-d H:i:s",$this->orderinfo['orderinfo']['update_time'])?></i></small>
+                        </p>
+                    </div>
+                    <div class="timeline-body">
+                        <p>
+                             <?php echo $this->orderinfo['orderinfo']['desc']?>
+                        </p>
+                    </div>
+                </div>
+            </li>
+           <?php
+                $audit_info_list = $this->orderinfo['orderauditinfo'];
+                $idx = 0;
+                if( $audit_info_list) foreach ($audit_info_list as $audit):
+                    $idx++;
+            ?>
+            <li <?php if($idx % 2) echo " class=\"timeline-inverted\""; ?>>
+                <div class="timeline-badge"><i class="fa fa-check"></i>
+                </div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4 class="timeline-title"><?php echo G::GetRealName($audit['audit_user'])." ".G::GetAuditStatus($audit['status']);?> </h4>
+                        <p>
+                            <small class="text-muted"><i class="fa fa-time"><?php echo date("Y-m-d H:i:s",$audit['update_time'])?></i></small>
+                        </p>
+                    </div>
+                    <div class="timeline-body">
+                        <p>
+                            <?php echo $audit['audit_info']?>
+                        </p>
+                    </div>
+                </div>
+            </li>
+            <?php
+                endforeach;
+            ?>
+        </ul>
+    </div>
+</div>
