@@ -1,0 +1,61 @@
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><?php echo $this->flow['flow_info']['name'];?></h3></div>
+			<div class="panel-body">
+				<form class="form-horizontal p-20" role="form" method="post" action="/apply/create?flow=<?php  echo $flow['flow_info']['flow_id'];?>">
+					<div class="form-group">
+						<label class="col-md-2 control-label">申请摘要</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" value="" placeholder="这里写上大概申请的内容" name="summary"></div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">申请明细</label>
+						<div class="col-md-10">
+							<textarea class="form-control" rows="10"  name="content"></textarea>
+						</div>
+					</div>
+					<?php
+					foreach ($this->flow['flow_levels'] as $level):
+						$idx=1;
+					?>
+					<div class="form-group">
+						<label class="col-md-2 control-label" for="example-email">流程 - <?php echo $idx; $idx++;?></label>
+						<div class="col-md-10">
+							<span style="font-size: larger;"><?php echo $level['name'];?></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label" for="example-email">审批人</label>
+						<div class="col-md-10">
+							<input type="email" id="example-email" readonly name="example-email" class="form-control" placeholder="Email" value="<?php echo $level['approver'];?>"></div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label" for="example-email">关注人</label>
+						<div class="col-md-10">
+							<input type="email" id="example-email" readonly name="example-email" class="form-control" placeholder="Email" value="<?php echo $level['watcher'];?>"></div>
+					</div>
+					<br>
+					<?php
+						endforeach;
+					?>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">是否紧急</label>
+						<div class="col-md-10">
+							<div class="checkbox-inline">
+								<label class="cr-styled">
+									<input type="checkbox">
+										<i class="fa"></i>是
+									</label>
+							</div>
+						</div>
+					</div>
+					<button type="submit" class="btn btn-purple">提交</button>
+					<button type="" class="btn btn-warning">放弃</button>
+				</form>
+			</div><!-- panel-body -->
+		</div><!-- panel -->
+	</div><!-- col -->
+</div>

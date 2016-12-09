@@ -1,0 +1,43 @@
+<div cass="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">待审批</h3></div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>申请项目</th>
+										<th>发起时间</th>
+										<th>状态</th>
+										<th>最后更新时间</th>
+										<th>操作</th></tr>
+								</thead>
+								<tbody>
+									<?php
+										foreach ($this->orderlist as $order):
+											?>
+									<tr>
+										<td><?php echo $order['orderid'];?></td>
+										<td><?php echo $order['flow_id'];?></td>
+										<td><?php echo date("Y-m-d H:i",$order['create_time']);?></td>
+										<td>状态</td>
+										<td><?php echo date("Y-m-d H:i",$order['update_time']);?></td>
+										<td></td>
+									</tr>
+									<?php
+										endforeach;
+									?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
