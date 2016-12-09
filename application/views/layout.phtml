@@ -27,14 +27,15 @@
         <link href="/public/css/helper.css" rel="stylesheet">
         <link href="/public/assets/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
         <link href="/public/assets/datatables/buttons.bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="/public//public//public/assets/datatables/fixedHeader.bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="/public//public/assets/datatables/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/public//public/assets/datatables/fixedHeader.bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/public/assets/datatables/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="/public/assets/datatables/scroller.bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="/public/assets/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 
         <!-- Plugins css -->
         <link rel="stylesheet" type="text/css" href="/public/assets/jquery-multi-select/multi-select.css" />
         <link rel="stylesheet" type="text/css" href="/public/assets/select2/select2.css" />
+        <link href="/public/assets/modal-effect/css/component.css" rel="stylesheet">
 
 
     </head>
@@ -59,29 +60,21 @@
                 <ul class="list-unstyled">
                     <li class=""><a href="/index/index"><i class="zmdi zmdi-view-dashboard"></i> <span class="nav-label">欢迎页</span></a></li>
                     <li class="has-submenu <?php G::RenderActive('flow','list')?>" >
-                        <a href="/flow/list"><i class="zmdi zmdi-format-underlined"></i> <span class="nav-label">申请权限</span><span class="menu-arrow"></span></a>
+                        <a href="/flow/list"><i class="fa fa-edit"></i> <span class="nav-label">新建申请</span></a>
       
                     </li>
-                    <li class="has-submenu <?php G::RenderActive('apply')?>" ><a href="/apply/list"><i class="zmdi zmdi-album"></i> <span class="nav-label">我的申请</span><span class="badge bg-warning">New</span></a>
+                    <li class="has-submenu <?php G::RenderActive('apply')?>" ><a href="/apply/list"><i class="fa fa-file-text-o
+"></i> <span class="nav-label">我的申请</span><span class="badge bg-warning"><?=$this->counter['counter_apply']?></span></a>
                     </li>
-                    <li class="has-submenu <?php G::RenderActive('approval')?>" ><a href="/approval/list"><i class="zmdi zmdi-collection-text"></i> <span class="nav-label">我的审批</span><span class="menu-arrow"></span></a>
+                    <li class="has-submenu <?php G::RenderActive('approval')?>" ><a href="/approval/list"><i class="fa fa-clipboard"></i> <span class="nav-label">我的审批</span><span class="badge bg-warning"><?=$this->counter['counter_audit']?></span></a>
                     </li>
-                    <li class="has-submenu <?php G::RenderActive('group')?>" ><a href="#"><i class="zmdi ion-android-social-user"></i> <span class="nav-label">用户组管理</span><span class="menu-arrow"></span></a>
-                        <ul class="list-unstyled">
-                            <li><a href="/group/list">用户组列表</a></li>
-                            <li><a href="/group/create">添加用户组</a></li>
-                        </ul>
+                    <li class="has-submenu <?php G::RenderActive('group')?>" ><a href="/group/list"><i class="ion-android-contacts"></i> <span class="nav-label">用户组管理</span></a>
                     </li>
                     </li>
                     <li class="has-submenu <?php G::RenderActive('flow')?>"><a href="#"><i class="zmdi zmdi-collection-item"></i> <span class="nav-label">申请流程管理</span><span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
                             <li><a href="/flow/list">申请流程管理</a></li>
                             <li><a href="/flow/create">创建申请流程</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-submenu"><a href="#"><i class="zmdi zmdi-email"></i> <span class="nav-label">我的消息</span><span class="badge bg-success">7</span></a>
-                        <ul class="list-unstyled">
-                            <li><a href="email-inbox.html">Inbox</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -113,42 +106,7 @@
                 <nav class=" navbar-default" role="navigation">
                     <!-- Right navbar -->
                     <ul class="nav navbar-nav navbar-right top-menu top-right-menu">  
-                        <!-- mesages -->  
-                        <li class="dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <i class="zmdi zmdi-email-open"></i>
-                                <span class="badge badge-sm up bg-purple count">4</span>
-                            </a>
-                            <ul class="dropdown-menu extended fadeInUp animated nicescroll" tabindex="5001">
-                                <li>
-                                    <p>Messages</p>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="pull-left"><img src="/public/img/avatar-2.jpg" class="img-circle thumb-sm m-r-15" alt="img"></span>
-                                        <span class="block"><strong>John smith</strong></span>
-                                        <span class="media-body block">New tasks needs to be done<br><small class="text-muted">10 seconds ago</small></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="pull-left"><img src="/public/img/avatar-3.jpg" class="img-circle thumb-sm m-r-15" alt="img"></span>
-                                        <span class="block"><strong>John smith</strong></span>
-                                        <span class="media-body block">New tasks needs to be done<br><small class="text-muted">3 minutes ago</small></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="pull-left"><img src="/public/img/avatar-4.jpg" class="img-circle thumb-sm m-r-15" alt="img"></span>
-                                        <span class="block"><strong>John smith</strong></span>
-                                        <span class="media-body block">New tasks needs to be done<br><small class="text-muted">10 minutes ago</small></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <p><a href="inbox.html" class="text-right">See all Messages</a></p>
-                                </li>
-                            </ul>
-                        </li>
+                       
                         <!-- user login dropdown start-->
                         <li class="dropdown text-center">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -174,7 +132,7 @@
             <!-- ================== -->
             
             <div class="wraper container-fluid">
-                <?php if($this->layout['meta_title']){?>
+                <?php if(isset($this->layout['meta_title'])){?>
                 <div class="page-title"> 
                     <h3 class="title"><?php echo $this->layout['meta_title']; ?></h3> 
                 </div>

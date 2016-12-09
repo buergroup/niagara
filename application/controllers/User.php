@@ -13,7 +13,6 @@ class UserController extends Yaf_Controller_Abstract {
 
     public function indexAction() {
         $username = $this->_user->showUserInfo();
-        var_dump($username);die();
     }
     public function loginAction() {
         if(!$this->_query->isGet()){

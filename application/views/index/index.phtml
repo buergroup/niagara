@@ -1,34 +1,38 @@
+<?php 
+  if(!isMobile()){
+
+?>
 <div class="row">
   <div class="col-sm-12">
-    <div class="bg-picture" style="background-image:url('/public/img/bg_6.jpg');margin-bottom: 20px; margin: 0px 0px 20px 0px;">
+    <div class="bg-picture" style="background-image:url('/public/img/bg-niagara.png');margin-bottom: 20px; margin: 0px 0px 20px 0px;">
      
     </div>
   </div>
 </div>
-
+<?php }?>
 <div class="row">
   <div class="col-md-3 col-sm-6">
     <div class="widget-panel widget-style-1 bg-pink">
-      <i class="fa fa-pencil-square-o"></i>
-      <h2 class="m-0 counter text-white">50</h2>
-      <div class="text-white">我的申请</div></div>
+      <a href="/flow/list"><i class="fa fa-edit"></i></a>
+      <h2 class="m-0 counter text-white">0</h2>
+      <div class="text-white">新建申请</div></div>
   </div>
   <div class="col-md-3 col-sm-6">
     <div class="widget-panel widget-style-1 bg-warning">
-      <i class="fa fa-pencil"></i>
-      <h2 class="m-0 counter text-white">12056</h2>
-      <div class="text-white">我的审批</div></div>
+      <a href="/apply/list"><i class="fa fa-file-text-o"></i></a>
+      <h2 class="m-0 counter text-white"><?php echo $this->counter['counter_apply']?></h2>
+      <div class="text-white">我的申请</div></div>
   </div>
   <div class="col-md-3 col-sm-6">
     <div class="widget-panel widget-style-1 bg-info">
-      <i class="fa fa-download"></i>
-      <h2 class="m-0 counter text-white">1268</h2>
-      <div class="text-white">申请数量</div></div>
+      <a href="/approval/list"><i class="fa fa-clipboard"></i></a>
+      <h2 class="m-0 counter text-white"><?=$this->counter['counter_audit']?></h2>
+      <div class="text-white">我的审批</div></div>
   </div>
   <div class="col-md-3 col-sm-6">
     <div class="widget-panel widget-style-1 bg-success">
-      <i class="fa fa-book"></i>
-      <h2 class="m-0 counter text-white">145</h2>
+      <i class="fa fa-list"></i>
+      <h2 class="m-0 counter text-white"><?=$this->counter['counter_flows']?></h2>
       <div class="text-white">权限数量</div></div>
   </div>
 </div>
@@ -37,7 +41,7 @@
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Niagara 是什么</h3></div>
+        <h3 class="panel-title">Niagara</h3></div>
       <div class="panel-body">
         <p>
           <span class="dropcap text-primary">N</span>iagara是一个公司内部的权限申请管理系统。当你需要权限的时候，可以在此发起申请，交给相关人员审批，整个流程结束后哦，你就能看到相应的权限啦~<br>

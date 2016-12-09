@@ -21,7 +21,7 @@ class UserInfoModel {
 		header("Location:/user/login");
 	}
 	public function setForward($url){
-		setcookie("forward_uri",$url);
+		setcookie("forward_uri",$url,time()+3600, '/');
 	}
 	public function getForward(){
 		return $_COOKIE['forward_uri']?$_COOKIE['forward_uri']:'/index';

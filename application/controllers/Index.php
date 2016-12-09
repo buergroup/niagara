@@ -10,6 +10,7 @@ class IndexController extends Yaf_Controller_Abstract {
     public function indexAction() {
         $user = new UserInfoModel();
         $user->showUserInfo();
+        $this->_view->counter = Yaf_Registry::get('counter');
     }
     
 }

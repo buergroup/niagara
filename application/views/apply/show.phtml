@@ -3,7 +3,7 @@
         <ul class="timeline m-b-30">
 
             <li>
-                <div class="timeline-badge"><i class="fa fa-check"></i>
+                <div class="timeline-badge success"><i class="fa fa-check"></i>
                 </div>
                 <div class="timeline-panel">
                     <div class="timeline-heading">
@@ -12,10 +12,10 @@
                             <small class="text-muted"><i class="fa fa-time"><?php echo date("Y-m-d H:i:s",$this->orderinfo['orderinfo']['update_time'])?></i></small>
                         </p>
                     </div>
+                    <?php echo $this->orderinfo['orderinfo']['summary']?>
+                    <hr>
                     <div class="timeline-body">
-                        <p>
-                             <?php echo $this->orderinfo['orderinfo']['desc']?>
-                        </p>
+                        <?php echo $this->orderinfo['orderinfo']['content']?>
                     </div>
                 </div>
             </li>
@@ -26,7 +26,16 @@
                     $idx++;
             ?>
             <li <?php if($idx % 2) echo " class=\"timeline-inverted\""; ?>>
-                <div class="timeline-badge"><i class="fa fa-check"></i>
+                <?php 
+                    if($audit['status'] == AUDIT_ACCEPTED){
+                        $class="success";
+                    }else if($audit['status'] == AUDIT_REJECTED){
+                        $class="error";
+                    }else{
+                        $class="";
+                    }
+                ?>
+                <div class="timeline-badge <?=$class?>"><i class="fa fa-check"></i>
                 </div>
                 <div class="timeline-panel">
                     <div class="timeline-heading">
@@ -35,9 +44,18 @@
                             <small class="text-muted"><i class="fa fa-time"><?php echo date("Y-m-d H:i:s",$audit['update_time'])?></i></small>
                         </p>
                     </div>
+                    <hr>
                     <div class="timeline-body">
                         <p>
-                            <?php echo $audit['audit_info']?>
+                            <?php 
+                                echo $audit['audit_info']; 
+                                if($audit['status'] == AUDIT_AUDITING && $this->userinfo['username'] == $audit['audit_user']){
+                                    ?>
+                                    <input type="hidden" value="<?=$audit['level']?>" name="level" id="level">
+                                    <input type="hidden" value="<?=$audit['orderid']?>" name="orderid" id="orderid">
+                                    <textarea class="form-control" rows="2"  name="content"  id="content"></textarea><br>
+                                     <button node-val="23" class="btn btn-success  btn-sm m-b-5 passed" >通过</button> <button node-val="24" class="  btn-sm btn btn-danger m-b-5 reject" >拒绝</button>
+                            <?php } ?>
                         </p>
                     </div>
                 </div>
@@ -45,6 +63,28 @@
             <?php
                 endforeach;
             ?>
+
+            <?php
+                if($this->orderinfo['orderinfo']['status'] == 1){
+            ?>
+             <li>
+                <div class="timeline-badge success"><i class="fa fa-check"></i>
+                </div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4 class="timeline-title">已结束</h4>
+                        <p>
+                            <small class="text-muted"><i class="fa fa-time"><?php echo date("Y-m-d H:i:s",$this->orderinfo['orderinfo']['update_time'])?></i></small>
+                        </p>
+                    </div>
+                </div>
+            </li>
+            <?php
+                }
+            ?>
         </ul>
     </div>
 </div>
+<?php
+     Register::set('js/apply/apply.js');
+?>

@@ -80,6 +80,69 @@ class OrderManageModel {
 		return true;
 	}
 
+	/*
+	 * $p array('orderid'=>xx)
+	 */
+	public function addNextOrderResult($p) {
+		$where = $this->_flowOrder->getAdapter()->quoteInto('orderid = ?', $p['orderid']);
+		$order = $this->_flowOrder->fetchRow($where)->toArray();
+
+		$select = $this->_flowLevel->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+		$select->setIntegrityCheck(false)
+			->where('flow_id = ?', $order['flow_id'])
+			->order('level desc')
+			->limit(1);
+		$orderMaxLevel = $this->_flowLevel->fetchRow($select)->toArray()['level'];
+
+		$select = $this->_orderResult->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+		$select->setIntegrityCheck(false)
+			->where('orderid = ?', $p['orderid'])
+			->order('level desc')
+			->limit(1);
+		$resultMaxLevel = $this->_orderResult->fetchRow($select);
+		$resultMaxLevel = $resultMaxLevel ? $resultMaxLevel->toArray()['level'] : -1;
+		if ($orderMaxLevel == $resultMaxLevel) {
+			return true;
+		}
+
+		$p['level'] = $resultMaxLevel + 1;
+
+
+		$where = array();
+		$where[] = $this->_flowLevel->getAdapter()->quoteInto('flow_id = ?', $order['flow_id']);
+		$where[] = $this->_flowLevel->getAdapter()->quoteInto('level = ?', $p['level']);
+		
+		$flowLevel = $this->_flowLevel->fetchRow($where)->toArray();
+
+		$audits = array();
+		$approver = $flowLevel['approver'];//case 3
+		if (strpos($approver, '@')) { // email
+			$audits = explode(',', $approver);
+		} else {
+			$gp = $this->_groupMan->getGroup($approver);
+			if ($gp && $gp['group_members']) {
+				foreach ($gp['group_members'] as $members) {
+					$audits[] = $members['user'];
+				}
+			}
+		}
+
+		foreach ($audits as $audit) {
+			$data = array(
+				'orderid'=>$p['orderid'],
+				'level'=>$p['level'],
+				'claimer'=>$order['claimer'],
+				'status'=>22,
+				'audit_info'=>'',
+				'audit_user'=>$audit,
+				'create_time'=>time(),
+				'update_time'=>time(),
+			);
+			$this->_orderResult->insert($data);
+		}
+		return true;
+	}
+
 	public function auditOrderResult($p) {
 		$where = $this->_flowOrder->getAdapter()->quoteInto('orderid = ?', $p['orderid']);
 		$order = $this->_flowOrder->fetchRow($where)->toArray();
@@ -109,7 +172,39 @@ class OrderManageModel {
 		$where[] = $this->_orderResult->getAdapter()->quoteInto('audit_user = ?', $p['audit_user']);
 		
 		$p['update_time'] = time();
-		return $this->_orderResult->update($p, $where);
+		$this->_orderResult->update($p, $where);
+
+		$closed = false;
+		if ($p['status'] == 24) {
+			$closed = true;
+		} else {
+			$select = $this->_flowLevel->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+			$select->setIntegrityCheck(false)
+				->where('flow_id = ?', $order['flow_id'])
+				->order('level desc')
+				->limit(1);
+			$orderMaxLevel = $this->_flowLevel->fetchRow($select)->toArray()['level'];
+
+			$select = $this->_orderResult->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+			$select->setIntegrityCheck(false)
+				->where('orderid = ?', $p['orderid'])
+				->order('level desc')
+				->limit(1);
+			$resultMaxLevel = $this->_orderResult->fetchRow($select);
+			$resultMaxLevel = $resultMaxLevel ? $resultMaxLevel->toArray()['level'] : -1;
+			if ($orderMaxLevel == $resultMaxLevel) {
+				$closed = true;
+			}
+		}
+
+		if ($closed) {
+			$where = $this->_flowOrder->getAdapter()->quoteInto('orderid = ?', $p['orderid']);
+			$data = array();
+			$data['update_time'] = time();
+			$data['status'] = 1;//0: open, 1: close, 2: delete
+			$this->_flowOrder->update($data, $where);
+		}
+		return true;
 	}
 
 	public function getOrderResult($p) {
@@ -129,7 +224,8 @@ class OrderManageModel {
 				$tmp[$row['level']]['audit_info'] = $row->audit_info;
 			}
 		}
-		foreach ($tmp as $level => $data) {
+		if(is_array($tmp))
+			foreach ($tmp as $level => $data) {
 			$ret[$level]['audit_user'] = $data['audit_user'];
 			$ret[$level]['audit_info'] = $data['audit_info'];
 		}
@@ -143,13 +239,12 @@ class OrderManageModel {
 			'orderauditinfo' => $this->getOrderResult($orid),
 		);
 	}
-	public function getAuditOrderByUser($p) {
+	public function getAuditOrderByUser(array $p) {
 		$select = $this->_orderResult->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)
 			->where('audit_user = ?', $p['audit_user'])
-			->where('status = ?', $p['status'])
+			->where('status in (?)', $p['status'])
 			->order('update_time desc');
-		 
 		$rows = $this->_orderResult->fetchAll($select);
 		$rows = $rows ? $rows->toArray() : array();
 		if (!$rows) {
@@ -168,6 +263,8 @@ class OrderManageModel {
 
 		return $ret;
 	}
+
+	
 	public function getOrderByUser($p) {
 		$select = $this->_flowOrder->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)
@@ -176,5 +273,36 @@ class OrderManageModel {
 		 
 		$rows = $this->_flowOrder->fetchAll($select);
 		return $rows ? $rows->toArray() : array();
+	}
+	public function counterWaitingOrderByUser($user){
+		$select = $this->_flowOrder->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+		$select->setIntegrityCheck(false)
+			->where('claimer = ? AND status = 0', $user)
+			->order('update_time desc');
+		$rows = $this->_flowOrder->fetchAll($select);
+		$list = $rows ? $rows->toArray() : array();
+		return count($list);
+	}
+	public function counterWaitingAuditByUser($user){
+		$list = $this->getAuditOrderByUser(array('audit_user'=>$user, 'status'=>array(22)));
+		return count($list);
+	}
+	public function countFlows(){
+		$select = $this->_flowInfo->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+		$select->setIntegrityCheck(false)
+			->where('status = ?', 0);
+		$rows = $this->_flowInfo->fetchAll($select);
+		$list = $rows ? $rows->toArray() : array();
+		return count($list);
+	}
+	public function getCounter(){
+		$user = new UserInfoModel();
+		$userinfo = $user->showUserInfo();
+		$ret = array(
+              'counter_apply' => $this->counterWaitingOrderByUser($userinfo['username']),
+              'counter_audit' => $this->counterWaitingAuditByUser($userinfo['username']),
+              'counter_flows' => $this->countFlows(),
+		 );
+		Yaf_Registry::set('counter', $ret);
 	}
 }

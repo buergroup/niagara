@@ -1,16 +1,15 @@
 <div cass="row">
 	<div class="col-md-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">待审批</h3></div>
-			<div class="panel-body">
-				<div class="row">
-					<div class="col-md-12 col-sm-12 col-xs-12">
-						<div class="table-responsive">
-							<table class="table">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">待审批</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <table class="table table-striped">
 								<thead>
 									<tr>
-										<th>#</th>
 										<th>申请项目</th>
 										<th>发起时间</th>
 										<th>状态</th>
@@ -18,14 +17,15 @@
 										<th>操作</th></tr>
 								</thead>
 								<tbody>
+								<?php if($this->audit_auditing) foreach ($this->audit_auditing as $auditing): ?>
 									<tr>
-										<td>1</td>
-										<td>电脑申请</td>
-										<td>2016-12-07 15:40</td>
-										<td>等待OPS操作</td>
-										<td>2016-12-07 15:40</td>
-										<td></td>
+										<td><?=$auditing['flow_info']['name']?></td>
+										<td><?=date('Y-m-d H:m', $auditing['flow_order_result']['create_time'])?></td>
+										<td><?=G::GetAuditStatus($auditing['flow_order_result']['status'],true)?></td>
+										<td><?=date('Y-m-d H:m', $auditing['flow_order_result']['update_time'])?></td>
+										<td><a href="/apply/show?id=<?=$auditing['flow_order']['orderid']?>"><button class="btn btn-icon btn-success m-b-5"> <i class="fa fa-eye"></i> 查看 </button></td>
 									</tr>
+								<?php endforeach; ?>
 								</tbody>
 							</table>
 						</div>
@@ -33,17 +33,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">已审批</h3></div>
-			<div class="panel-body">
-				<div class="row">
-					<div class="col-md-12 col-sm-12 col-xs-12">
-						<div class="table-responsive">
-							<table class="table">
-								<thead>
+	<div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">已审批</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <table class="table table-striped">
+                        	</thead>
 									<tr>
-										<th>#</th>
 										<th>申请项目</th>
 										<th>发起时间</th>
 										<th>状态</th>
@@ -51,14 +51,15 @@
 										<th>操作</th></tr>
 								</thead>
 								<tbody>
+									<?php if($this->audit_audited) foreach ($this->audit_audited as $audited): ?>
 									<tr>
-										<td>1</td>
-										<td>电脑申请</td>
-										<td>2016-12-07 15:40</td>
-										<td>已通过</td>
-										<td>2016-12-07 15:40</td>
-										<td></td>
+										<td><?=$audited['flow_info']['name']?></td>
+										<td><?=date('Y-m-d H:m', $audited['flow_order_result']['create_time'])?></td>
+										<td><?=G::GetAuditStatus($audited['flow_order_result']['status'],true)?></td>
+										<td><?=date('Y-m-d H:m', $audited['flow_order_result']['update_time'])?></td>
+										<td><a href="/apply/show?id=<?=$audited['flow_order']['orderid']?>"><button class="btn btn-icon btn-success m-b-5"> <i class="fa fa-eye"></i> 查看 </button></td>
 									</tr>
+								<?php endforeach; ?>
 								</tbody>
 							</table>
 						</div>
@@ -67,4 +68,3 @@
 			</div>
 		</div>
 	</div>
-</div>

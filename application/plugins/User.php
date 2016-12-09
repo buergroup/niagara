@@ -23,17 +23,27 @@ class UserPlugin extends Yaf_Plugin_Abstract {
         if($request->action == 'login'){
             return;
         }
-        $uri = "/".$request->controller."/".$request->action;
-        $params = http_build_query($request->getParams());
-        if($params){
-            $uri = $uri."?".$params;
-        }
+        $uri = '/index';
         $user = new UserInfoModel();
+        if(in_array(strtolower($request->controller), array('flow','index','group','apply','approval'))){
+            $uri = "/".$request->controller."/".$request->action;
+            $params = http_build_query($request->getQuery());
+            if($params){
+                $uri = $uri."?".$params;
+            }
+            $user->setForward($uri);
+        }
         $userinfo = $user->showUserInfo();
         if(!$userinfo){
-             $user->setForward($uri);
              $user->requiredLogin();
         }
+        //判断Auth
+        $auth = new AuthManageModel();
+        $ret = $auth->canAccess($request->controller,$request->action);
+        if($ret){
+            throw new AuthException("Permission denied for the action", 1);
+        }
+
     }
 
     public function routerStartup ( Yaf_Request_Abstract $request , Yaf_Response_Abstract $response ){

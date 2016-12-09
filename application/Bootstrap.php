@@ -23,6 +23,7 @@ class Bootstrap extends Yaf_Bootstrap_Abstract {
     public function _initNamespaces(){
         Yaf_Loader::getInstance()->registerLocalNameSpace(array("Zend"));
         Yaf_Loader::getInstance()->registerLocalNameSpace(array("CAS"));
+        G::load();
     }
 
     public function _initRoutes(){

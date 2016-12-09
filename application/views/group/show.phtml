@@ -1,8 +1,34 @@
 <div class="row">
+        <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">增加用户</h3></div>
+            <div class="panel-body">
+                <form class="form-horizontal p-20" role="form">
+                    <div class="form-group">
+                        <div class="input-group ">
+                            <select class="select2" multiple   data-placeholder="" name="user">
+                                <?php 
+                                    foreach ($this->userlist as $user) {
+                                        echo '<option value="'.$user['username'].'">'.$user['username'].'</option>';
+                                    }
+                                ?>
+                            </select>
+
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-effect-ripple btn-primary adduser">提交</button></span>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div><!-- panel-body -->
+        </div><!-- panel -->
+    </div><!-- col -->
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"><?echo $this->group['group_info']['name']?></h3>
+                        <input type="hidden" id="groupid" value="<?php echo $this->group['group_info']['id'];?>">
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -14,7 +40,6 @@
                                             <th>邮箱</th>
                                             <th>姓名</th>
                                             <th>所属组</th>
-                                            <th>操作</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -26,7 +51,7 @@
                                             <td><?php echo $group['user'];?></td>
                                             <td><?php echo $group['user'];?></td>
                                             <td><?echo $this->group['group_info']['name']?></td>
-                                            <td>   <a href="/group/show?id=<?php echo $group['group_info']['id'];?>"><button class="btn btn-icon btn-primary m-b-5"> <i class="fa fa-star"></i> </button></a> 
+                                            
                                     </td>
                                 </tr>
                                 <?php
@@ -43,5 +68,13 @@
 
         </div> <!-- End Row -->
 <?php
+    Register::set('assets/tagsinput/jquery.tagsinput.min.js');
+    Register::set('assets/toggles/toggles.min.js');
+    Register::set('assets/timepicker/bootstrap-timepicker.min.js');
+    Register::set('assets/jquery-multi-select/jquery.multi-select.js');
+    Register::set('assets/jquery-multi-select/jquery.quicksearch.js');
+    Register::set('assets/bootstrap-inputmask/bootstrap-inputmask.min.js');
+    Register::set('assets/spinner/spinner.min.js');
+    Register::set('assets/select2/select2.min.js');
     Register::set('js/group/group.js');
 ?>

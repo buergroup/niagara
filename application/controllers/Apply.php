@@ -45,6 +45,7 @@ class ApplyController extends Yaf_Controller_Abstract {
     }
     
     public function listAction() {
+        $this->_layout->meta_title = '我的申请';
         $order = new OrderManageModel();
         $orderlist = $order->getOrderByUser($this->userinfo['username']);
         if($orderlist){
@@ -55,10 +56,12 @@ class ApplyController extends Yaf_Controller_Abstract {
         $order_id = $this->_query->getQuery('id') ?: 0;
         $order = new OrderManageModel();
         $orderinfo = $order->getOrderById($order_id);
-        //var_dump($orderinfo);die();
 
         if($orderinfo){
+            $this->_view->userinfo = $this->userinfo;
             $this->_view->orderinfo = $orderinfo;
         }
+    }
+    public function counterAction(){
     }
 }

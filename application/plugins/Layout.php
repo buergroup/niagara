@@ -19,7 +19,12 @@ class LayoutPlugin extends Yaf_Plugin_Abstract {
     }
 
     public function dispatchLoopStartup ( Yaf_Request_Abstract $request , Yaf_Response_Abstract $response ){
-
+        $action = $request->getActionName();
+        if($action == 'login' ||  $action == 'logout'){
+            return;
+        }
+        $order = new OrderManageModel();
+        $order->getCounter();
     }
 
     public function postDispatch ( Yaf_Request_Abstract $request , Yaf_Response_Abstract $response ){
@@ -33,6 +38,8 @@ class LayoutPlugin extends Yaf_Plugin_Abstract {
         $layout = new Yaf_View_Simple($this->_layoutDir);
         $layout->content = $body;
         $user = new UserInfoModel();
+        $counter = Yaf_Registry::get('counter');
+        $layout->counter = $counter;
         $layout->user = $user->showUserInfo();
         $layout->assign('layout', $this->_layoutVars);
         /* set the response to use the wrapped version of the content */
@@ -44,7 +51,8 @@ class LayoutPlugin extends Yaf_Plugin_Abstract {
     }
 
     public function preResponse ( Yaf_Request_Abstract $request , Yaf_Response_Abstract $response ){
-        
+        $order = new OrderManageModel();
+        $counter = $order->getCounter();
     }
 
     public function routerShutdown ( Yaf_Request_Abstract $request , Yaf_Response_Abstract $response ){

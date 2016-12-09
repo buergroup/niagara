@@ -9,7 +9,7 @@
 						<div class="input-group m-t-10">
 						  <input type="email" id="group_name"  class="form-control" placeholder="请输入组名" mame="name">
 						  <span class="input-group-btn">
-						    <button type="button" class="btn btn-effect-ripple btn-primary">提交</button></span>
+						    <button type="button" class="btn btn-effect-ripple btn-primary addgroup">提交</button></span>
 						</div>
 					</div>
 					
@@ -59,7 +59,8 @@
 										<?php echo count($group['group_members']);?>
 									</td>
 									<td>
-										<a href="/group/show?id=<?php echo $group['group_info']['id'];?>"><button class="btn btn-icon btn-primary m-b-5"> <i class="fa fa-star"></i> </button></a> 
+										<a href="/group/show?id=<?php echo $group['group_info']['id'];?>">
+										<button class="btn btn-icon btn-success m-b-5"> <i class="fa fa-eye"></i> 查看 </button></a> 
 									</td>
 								</tr>
 								<?php

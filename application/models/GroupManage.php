@@ -12,6 +12,14 @@ class GroupManageModel {
 	public function addGroup($p) {
 		return $this->_groupModel->insert($p);
 	}
+	public function isInGroup($user, $group_id){
+		$select = $this->_memberModel->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
+		$select->setIntegrityCheck(false)
+			->where('user = ?', $user)
+			->where('group_id = ?', $group_id);
+		$arr = $this->_memberModel->fetchAll($select);
+		return count($arr)?true:false;
+	}
 
 	public function listGroups() {
 		$rows = $this->_groupModel->fetchAll();
@@ -77,4 +85,5 @@ class GroupManageModel {
 		}
 		return true;
 	}
+
 }
