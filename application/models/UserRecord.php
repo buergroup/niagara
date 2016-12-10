@@ -1,11 +1,17 @@
 <?php
 class UserRecordModel extends Zend_Db_Table_Abstract{
-	protected $_name = 'admin.user';
+	protected $_name;
 
 	public $username;
 	public $password;
 	public $duration;
 	private $_status;
+
+	public function __construct(){
+		$this->_config = Yaf_Application::app()->getConfig();
+		$this->_name = $this->_config->application->admintable;
+		parent::__construct();
+	}
 
 
 	public function authenticate(){

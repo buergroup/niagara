@@ -25,7 +25,9 @@ class UserPlugin extends Yaf_Plugin_Abstract {
         }
         $uri = '/index';
         $user = new UserInfoModel();
-        if(in_array(strtolower($request->controller), array('flow','index','group','apply','approval'))){
+        if(in_array(strtolower($request->controller), array('flow','index','group','apply','approval')) && 
+            in_array(strtolower($request->action), array('list','show','create','index')) 
+            ){
             $uri = "/".$request->controller."/".$request->action;
             $params = http_build_query($request->getQuery());
             if($params){
