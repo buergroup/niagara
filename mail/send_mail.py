@@ -12,11 +12,12 @@ from email_tool import EmailTool
 
 
 class flow_order:
-    def __init__(self, claimer, flow_id, summary, content, create_time, update_time):
+    def __init__(self, claimer, flow_id, summary, content, status, create_time, update_time):
         self.claimer = claimer
         self.flow_id = flow_id
         self.summary = summary
         self.content = content
+        self.status = status
         self.create_time = create_time
         self.update_time = update_time
 
@@ -57,6 +58,7 @@ class send_mail:
             line = line.strip()
             l = line.split('\t')
             if len(l) != 2:
+                print "input error", l
                 continue
             self.flow_info[l[0]] = l[1]
         fd.close()
@@ -69,6 +71,7 @@ class send_mail:
             line = line.strip()
             l = line.split('\t')
             if len(l) != 4:
+                print "input error", l
                 continue
             key = l[0] + '\t' + l[1]
             self.flow_level[key] = flow_level(l[2], l[3])
@@ -81,10 +84,11 @@ class send_mail:
         for line in fd:
             line = line.strip()
             l = line.split('\t')
-            if len(l) != 7:
+            if len(l) != 8:
+                print "input error", l
                 continue
             orderid = l[0]
-            self.flow_order[orderid] = flow_order(l[1], l[2], l[3], l[4], l[5], l[6])
+            self.flow_order[orderid] = flow_order(l[1], l[2], l[3], l[4], l[5], l[6], l[7])
         fd.close()
         return 0
 
@@ -95,29 +99,39 @@ class send_mail:
             line = line.strip()
             l = line.split('\t')
             if len(l) != 9:
+                print "input error", l
                 continue
 
             orderInfo = ""
             orderid = l[1]
             if orderid in self.flow_order:
                 orderInfo = self.flow_order[orderid]
+            else:
+                print "can't find orderid", orderid
+                continue
 
             flowName = ""
             flowId = orderInfo.flow_id
             if flowId in self.flow_info:
                 flowName = self.flow_info[flowId]
+            else:
+                print "can't find flowid", flowId
+                continue
 
             approver = ""
-            orderid_level = l[1] + '\t' + l[2]
-            if orderid_level in self.flow_level:
-                approver = self.flow_level[orderid_level].approver
+            flowid_level = flowId + '\t' + l[2]
+            if flowid_level in self.flow_level:
+                approver = self.flow_level[flowid_level].approver
+            else:
+                print "can't find flowid_level", orderid_level
+                continue
             orderRstInfo = flow_order_result(l[1], l[2], l[3], l[4], l[5], l[6], l[7], l[8])
             self.mail_html = self.add_reshtml_head(orderInfo.summary)
             self.mail_html += self.ps_line
             self.mail_html += self.table_head
-            self.mail_html += self.add_reshtml_table(flowName, orderInfo, orderRstInfo)
+            self.mail_html += self.add_reshtml_table(orderInfo, orderRstInfo)
             self.mail_html += self.add_reshtml_tail()
-            sm.send(self.mail_html, approver, orderInfo.claimer)
+            sm.send(self.mail_html, flowName, approver, orderInfo.claimer)
 
         fd.close()
         return 0
@@ -182,18 +196,18 @@ span.ct {font-weight:bold; color: #0000CC}
     def add_th_title(self, title):
         return "<tr><th colspan='16'>"+title+"</th></tr>"
 
-    def add_reshtml_table(self, flowName, orderInfo, orderRstInfo):
+    def add_reshtml_table(self, orderInfo, orderRstInfo):
         claimer = orderInfo.claimer
         content = orderInfo.content
         level = orderRstInfo.level
         status = orderRstInfo.status
         status_rst = "未知"
         if int(status) == 22:
-            status_rst == "待审核"
+            status_rst = "待审核"
         elif int(status) == 23:
-            status_rst == "审核通过"
+            status_rst = "审核通过"
         elif int(status) == 24:
-            status_rst == "审核拒绝"
+            status_rst = "审核拒绝"
         audit_info = orderRstInfo.audit_info
         audit_user = orderRstInfo.audit_user
         tmp_html=""
@@ -206,7 +220,7 @@ span.ct {font-weight:bold; color: #0000CC}
 
         return tmp_html
 
-    def send(self, html, approver, claimer):
+    def send(self, html, flowName, approver, claimer):
         try:
             mailServer=self.config.get('email', 'server')
             mailUserName=self.config.get('email', 'user')
@@ -214,7 +228,7 @@ span.ct {font-weight:bold; color: #0000CC}
             mailFrom=self.config.get('email', 'fromAdd')
             #toAdd=self.config.get('email', 'toAdd')
             emailTools = EmailTool(mailServer, mailUserName, mailPassword, mailFrom)
-            subject='[Niagara]--审批单'
+            subject='[Niagara]--' + flowName + '-- 审批单'
             print 'send mail to', approver, claimer
             emailTools.sendEmail(approver + ',' + claimer, subject, html)
 
