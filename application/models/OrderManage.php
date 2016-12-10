@@ -14,9 +14,7 @@ class OrderManageModel {
 		$this->_flowLevel = new FlowLevelModel();
 		$this->_groupMan = new GroupManageModel();
 	}
-		//                getOrderByUser($user) @return (array of orders , order by update_time desc )
-		//                        getOrderResult($orderid) @return (array of flow order result , order by update_time desc )
-		//                                //getWatchOrderByUser($user) @return (array of flow order , order by update_time desc )))))))))))))))))
+
 	public function addOrder($p) {
 		if (!array_key_exists('create_time', $p)) {
 			$p['create_time'] = time();
@@ -49,7 +47,9 @@ class OrderManageModel {
 		$where[] = $this->_flowLevel->getAdapter()->quoteInto('flow_id = ?', $order['flow_id']);
 		$where[] = $this->_flowLevel->getAdapter()->quoteInto('level = ?', $p['level']);
 		
-		$flowLevel = $this->_flowLevel->fetchRow($where)->toArray();
+		$flowLevel = $this->_flowLevel->fetchRow($where);
+		if(!$flowLevel) return false;
+		$flowLevel = $flowLevel->toArray();
 
 		$audits = array();
 		$approver = $flowLevel['approver'];//case 3
@@ -92,7 +92,9 @@ class OrderManageModel {
 			->where('flow_id = ?', $order['flow_id'])
 			->order('level desc')
 			->limit(1);
-		$orderMaxLevel = $this->_flowLevel->fetchRow($select)->toArray()['level'];
+		$orderMaxLevel = $this->_flowLevel->fetchRow($select);//->toArray()['level'];
+		if (!$orderMaxLevel) return false;
+		$orderMaxLevel = $orderMaxLevel->toArray()['level'];
 
 		$select = $this->_orderResult->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)
@@ -231,6 +233,7 @@ class OrderManageModel {
 		}
 		return $ret;
 	}
+
 	public function getOrderById($orid){
 		$orderinfo = $this->_flowOrder->find($orid)->toArray()[0];
 		return array(
@@ -239,6 +242,7 @@ class OrderManageModel {
 			'orderauditinfo' => $this->getOrderResult($orid),
 		);
 	}
+
 	public function getAuditOrderByUser(array $p) {
 		$select = $this->_orderResult->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)
@@ -274,6 +278,7 @@ class OrderManageModel {
 		$rows = $this->_flowOrder->fetchAll($select);
 		return $rows ? $rows->toArray() : array();
 	}
+
 	public function counterWaitingOrderByUser($user){
 		$select = $this->_flowOrder->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)
@@ -283,10 +288,12 @@ class OrderManageModel {
 		$list = $rows ? $rows->toArray() : array();
 		return count($list);
 	}
+
 	public function counterWaitingAuditByUser($user){
 		$list = $this->getAuditOrderByUser(array('audit_user'=>$user, 'status'=>array(22)));
 		return count($list);
 	}
+
 	public function countFlows(){
 		$select = $this->_flowInfo->select(Zend_Db_Table::SELECT_WITH_FROM_PART);
 		$select->setIntegrityCheck(false)
@@ -295,6 +302,7 @@ class OrderManageModel {
 		$list = $rows ? $rows->toArray() : array();
 		return count($list);
 	}
+
 	public function getCounter(){
 		$user = new UserInfoModel();
 		$userinfo = $user->showUserInfo();
