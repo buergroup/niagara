@@ -55,6 +55,14 @@ jQuery(document).ready(function() {
         $('select.select2').select2({
             width: '100%'
         });
+    });
+      $('.btn-purple').click(function(){
+        var summary = $('input[name=summary]').val();
+        var content = $('input[name=content]').val();
+        if(!summary || !content){
+            alert('摘要和描述信息不能为空哈~');
+            return false;
+        }
     })
 
 });

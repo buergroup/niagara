@@ -226,11 +226,11 @@ class OrderManageModel {
 				$tmp[$row['level']]['audit_info'] = $row->audit_info;
 			}
 		}
-		if(is_array($tmp))
+		if(isset($tmp) && is_array($tmp))
 			foreach ($tmp as $level => $data) {
-			$ret[$level]['audit_user'] = $data['audit_user'];
-			$ret[$level]['audit_info'] = $data['audit_info'];
-		}
+				$ret[$level]['audit_user'] = $data['audit_user'];
+				$ret[$level]['audit_info'] = $data['audit_info'];
+			}
 		return $ret;
 	}
 

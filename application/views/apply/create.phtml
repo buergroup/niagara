@@ -8,12 +8,12 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label">申请摘要</label>
 						<div class="col-md-10">
-							<input type="text" class="form-control" value="" placeholder="这里写上大概申请的内容" name="summary"></div>
+							<input type="text" class="form-control" value="" placeholder="这里写上申请的摘要" name="summary"></div>
 					</div>
 					<div class="form-group">
 						<label class="col-md-2 control-label">申请明细</label>
 						<div class="col-md-10">
-							<textarea class="form-control" rows="10"  name="content"></textarea>
+							<textarea class="form-control" rows="10"  name="content" placeholder="<?=$flow['flow_info']['desc'];?>"></textarea>
 						</div>
 					</div>
 					<?php
@@ -41,3 +41,6 @@
 		</div><!-- panel -->
 	</div><!-- col -->
 </div>
+<?php
+     Register::set('js/apply/apply.js');
+?>
