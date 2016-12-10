@@ -28,7 +28,7 @@ class FlowController extends Yaf_Controller_Abstract {
                $flowdata['flow_levels'][] = array(
                     'name'=>$level['desc'],
                     'approver'=>$level['approver'],
-                    'watcher'=>$level['watcher']
+                    'watcher'=>''
                 );
             }
             $flow = new FlowManageModel();

@@ -31,13 +31,6 @@ jQuery(document).ready(function() {
                        userlist+' </select>',
                  '   </div>',
                ' </div>',
-               ' <div class="form-group">',
-                  '  <label class="col-md-2 control-label">选择关注人</label>',
-                   '<div class="col-md-10">',
-                        '<select class="select2"  data-placeholder="支持多个关注人." name="level['+idx+'][watcher]">',
-                        userlist+'</select>',
-                    '</div>',
-                '</div>',
            ' </div>',
         ];
         return level.join('');
